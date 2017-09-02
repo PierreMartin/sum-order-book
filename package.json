@@ -1,0 +1,16 @@
+{
+  "name": "sum_order_book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.4",
+    "node.bittrex.api": "^0.5.1",
+    "socket.io": "^2.0.3"
+  }
+}
