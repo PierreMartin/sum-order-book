@@ -18,40 +18,53 @@
         <h1 id="mainTitle"></h1>
     </div>
 
-    <table class="table table-inverse" id="app">
+    <table class="table table-inverse">
         <thead>
         <tr>
             <th>#</th>
-            <th>SUM</th>
+            <th>REAL TIME</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <th scope="row">Ventes</th>
-            <td class="test0"></td>
+            <th scope="row">Sells</th>
+            <td class="sell"></td>
         </tr>
         <tr>
-            <th scope="row">Achats</th>
-            <td class="test1"></td>
+            <th scope="row">Buys</th>
+            <td class="buy"></td>
         </tr>
         <tr>
-            <th scope="row">Equilibre</th>
-            <td class="test2"></td>
-        </tr>
-        <tr>
-            <th scope="row">5</th>
-            <td class="test3"></td>
-        </tr>
-        <tr>
-            <th scope="row">10</th>
-            <td></td>
-        </tr>
-        <tr>
-            <th scope="row">20</th>
-            <td></td>
+            <th scope="row">Bal</th>
+            <td class="bal"></td>
         </tr>
         </tbody>
     </table>
+
+    <table class="table table-inverse">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>TOTAL SUM</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">Sells</th>
+            <td class="sellLastMinute"></td>
+        </tr>
+        <tr>
+            <th scope="row">Buys</th>
+            <td class="buyLastMinute"></td>
+        </tr>
+        <tr>
+            <th scope="row">Bal</th>
+            <td class="balLastMinute"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-danger" id="resetSumOneMinute">Reset total sum</button>
 
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="js/main.js"></script>
