@@ -1,83 +1,120 @@
 const socket = io.connect('http://localhost:8000');
 
-// Initialize varibles
+// Initialize variables
 var $mainTitle = document.querySelector('#mainTitle');
 var $sell = document.querySelector('.sell');
 var $buy = document.querySelector('.buy');
 var $bal = document.querySelector('.bal');
-var $sellLastMinute = document.querySelector('.sellLastMinute');
-var $buyLastMinute = document.querySelector('.buyLastMinute');
-var $balLastMinute = document.querySelector('.balLastMinute');
-var $resetSumOneMinute = document.querySelector('#resetSumOneMinute');
+var $sellCumulate = document.querySelector('.sellLastMinute');
+var $buyCumulate = document.querySelector('.buyLastMinute');
+var $balCumulate = document.querySelector('.balLastMinute');
+var $resetCumulate = document.querySelector('#resetSumOneMinute');
+var $balContainerRealtime = document.querySelector('.bal-container-realtime');
+var $balContainerCumulate = document.querySelector('.bal-container-cumulate');
 
-var last1minute = {};
-last1minute.totalOrderSellMin = 0;
-last1minute.totalOrderBuyMin = 0;
+var cumulate = {};
+cumulate.totalOrderSell = 0;
+cumulate.totalOrderBuy = 0;
 
-socket.on('updateExchangeState', function (param) {
-  var datas = param.datas;
-  var market = param.market;
+/**
+ * @param {String} balanceValue - the current value
+ * @param {Element} element - element html target
+ * @return {void}
+ * */
+function addStyle(balanceValue, element) {
+  if (balanceValue > 0) {
+    element.classList.add('change-positive');
+    element.classList.remove('change-negative');
+  } else if (balanceValue < 0) {
+    element.classList.add('change-negative');
+    element.classList.remove('change-positive');
+  } else {
+    element.classList.remove('change-negative');
+    element.classList.remove('change-positive');
+  }
+}
 
-  /*************** REAL TIME ****************/
-  var totalOrderSell = 0;
-  var totalOrderBuy = 0;
-  console.log(datas);
+/**
+ * display the real time datas
+ *
+ * @param {Array} datas - the datas from API Bittrex
+ * @param {String} market - the currency watching
+ * @return {void}
+ * */
+function showRealTime(datas, market) {
+  var orderSell = 0; // in btc
+  var orderBuy = 0; // in btc
 
   datas.forEach(function (data) {
     if (data.OrderType === 'SELL' && data.Quantity > 0 && data.Rate > 0) {
-      totalOrderSell += data.Quantity * data.Rate;
-      last1minute.totalOrderSellMin += totalOrderSell;
+      orderSell += data.Quantity * data.Rate;
+      cumulate.totalOrderSell += orderSell;
     }
 
     if (data.OrderType === 'BUY' && data.Quantity > 0 && data.Rate > 0) {
-      totalOrderBuy += data.Quantity * data.Rate;
-      last1minute.totalOrderBuyMin += totalOrderBuy;
+      orderBuy += data.Quantity * data.Rate;
+      cumulate.totalOrderBuy += orderBuy;
     }
   });
 
-  var balance = (-totalOrderSell +totalOrderBuy);
+  var balance = (-orderSell +orderBuy);
 
   $mainTitle.innerHTML = 'Bittrex Sum Average ' + market;
-  $sell.innerHTML = (totalOrderSell !== 0) ? '- ' + totalOrderSell.toFixed(6) + ' BTC' : '-';
-  $buy.innerHTML = (totalOrderBuy !== 0) ? '+ ' + totalOrderBuy.toFixed(6) + ' BTC' : '-';
+  $sell.innerHTML = (orderSell !== 0) ? '- ' + orderSell.toFixed(6) + ' BTC' : '-';
+  $buy.innerHTML = (orderBuy !== 0) ? '+ ' + orderBuy.toFixed(6) + ' BTC' : '-';
   $bal.innerHTML = balance.toFixed(6) + ' BTC';
 
   // styles css
-  if (balance > 0) {
-    $bal.style.color = '#159612';
-  } else {
-    $bal.style.color = '#961917';
-  }
+  addStyle(balance, $balContainerRealtime);
+}
 
-  /*************** SUM LAST 1 MINUTE ****************/
-  // Reset all
-  $resetSumOneMinute.addEventListener('mouseup', function () {
-    last1minute.totalOrderSellMin = last1minute.totalOrderBuyMin = 0;
+/**
+ * display the cumulate datas based on the real time
+ *
+ * @return {void}
+ * */
+function showCumulate() {
+  // Reset all at the action
+  $resetCumulate.addEventListener('mouseup', function () {
+    cumulate.totalOrderSell = cumulate.totalOrderBuy = 0;
 
-    var totalBalanceMin = (-last1minute.totalOrderSellMin + last1minute.totalOrderBuyMin);
+    var totalBalance = (-cumulate.totalOrderSell + cumulate.totalOrderBuy);
 
-    $sellLastMinute.innerHTML = (last1minute.totalOrderSellMin !== 0) ? '- ' + last1minute.totalOrderSellMin.toFixed(6) + ' BTC' : '-';
-    $buyLastMinute.innerHTML = (last1minute.totalOrderBuyMin !== 0) ? '+ ' + last1minute.totalOrderBuyMin.toFixed(6) + ' BTC': '-';
-    $balLastMinute.innerHTML = totalBalanceMin.toFixed(6) + ' BTC'; // static val
+    $sellCumulate.innerHTML = '-';
+    $buyCumulate.innerHTML = '-';
+    $balCumulate.innerHTML = totalBalance.toFixed(6) + ' BTC';
+    addStyle(0, $balContainerCumulate);
   });
 
-  var totalBalanceMin = (-last1minute.totalOrderSellMin + last1minute.totalOrderBuyMin);
+  var totalBalance = (-cumulate.totalOrderSell + cumulate.totalOrderBuy);
 
-  $sellLastMinute.innerHTML = (last1minute.totalOrderSellMin !== 0) ? '- ' + last1minute.totalOrderSellMin.toFixed(6) + ' BTC' : '-';
-  $buyLastMinute.innerHTML = (last1minute.totalOrderBuyMin !== 0) ? '+ ' + last1minute.totalOrderBuyMin.toFixed(6) + ' BTC': '-';
-  $balLastMinute.innerHTML = totalBalanceMin.toFixed(6) + ' BTC'; // static val
+  $sellCumulate.innerHTML = (cumulate.totalOrderSell !== 0) ? '- ' + cumulate.totalOrderSell.toFixed(6) + ' BTC' : '-';
+  $buyCumulate.innerHTML = (cumulate.totalOrderBuy !== 0) ? '+ ' + cumulate.totalOrderBuy.toFixed(6) + ' BTC': '-';
+  $balCumulate.innerHTML = totalBalance.toFixed(6) + ' BTC'; // static val
 
   // styles css
-  if (totalBalanceMin > 0) {
-    $balLastMinute.style.color = '#159612';
-  } else {
-    $balLastMinute.style.color = '#961917';
-  }
+  addStyle(totalBalance, $balContainerCumulate);
+}
 
-  // just for test :
+/**
+ * receive the socket
+ *
+ * @return {void}
+ * */
+socket.on('updateExchangeState', function (param) {
+  var datas = param.datas;
+  var market = param.market;
+  console.log(datas);
+
+  showRealTime(datas, market);
+  showCumulate();
+
+  /*
   setTimeout(function () {
-    // socket.emit('updateExchangeState')
+    socket.emit('orderbook');
   }, 1000);
+  */
 
 });
+
 

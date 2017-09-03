@@ -4,13 +4,14 @@
     <meta charset="utf-8">
 
     <!-- META -->
-    <title>titre</title>
-    <meta name="description" content="titre">
+    <title>Bittrex Sum Average</title>
+    <meta name="description" content="Bittrex Sum Average">
     <meta name="keywords" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
     <!-- CSS CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
@@ -34,7 +35,7 @@
             <th scope="row">Buys</th>
             <td class="buy"></td>
         </tr>
-        <tr>
+        <tr class="bal-container-realtime">
             <th scope="row">Bal</th>
             <td class="bal"></td>
         </tr>
@@ -45,7 +46,7 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>TOTAL SUM</th>
+            <th>CUMULATE</th>
         </tr>
         </thead>
         <tbody>
@@ -57,14 +58,14 @@
             <th scope="row">Buys</th>
             <td class="buyLastMinute"></td>
         </tr>
-        <tr>
+        <tr class="bal-container-cumulate">
             <th scope="row">Bal</th>
             <td class="balLastMinute"></td>
         </tr>
         </tbody>
     </table>
 
-    <button type="button" class="btn btn-danger" id="resetSumOneMinute">Reset total sum</button>
+    <button type="button" class="btn btn-danger" id="resetSumOneMinute">Reset cumulate</button>
 
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="js/main.js"></script>

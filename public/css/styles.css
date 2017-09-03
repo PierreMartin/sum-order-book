@@ -1,0 +1,11 @@
+table tr {
+	transition: 0.4s background-color;
+}
+
+table tr.change-positive {
+	background-color: green;
+}
+
+table tr.change-negative {
+	background-color: red;
+}
