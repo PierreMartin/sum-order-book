@@ -32,6 +32,14 @@ function addStyle(balanceValue, element) {
     element.classList.remove('change-negative');
     element.classList.remove('change-positive');
   }
+
+  if (element === $balContainerRealtime) {
+    setTimeout(function () {
+      element.classList.remove('change-negative');
+      element.classList.remove('change-positive');
+    }, 600);
+  }
+
 }
 
 /**
